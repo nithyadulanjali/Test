@@ -1,0 +1,421 @@
+﻿@model MSLSystem.Models.Registration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MSL | Registration Page</title>
+
+   
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS (including Popover functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/adminlte.min.css">
+</head>
+
+<body class="d-flex justify-content-center align-items-center vh-100" style="background-color: #CCF2F4;">
+    <div class="register-box mx-auto" style="max-width: 400px; width: 100%; margin-top: 2.8cm;">
+        <div class="card border-0 shadow-lg p-4 rounded" style="background-color: #F4F9F9;">
+            <div class="card-header text-center bg-transparent mb-3">
+                <a href="#" class="h1 text-primary"><b>MSL</b></a>
+            </div>
+
+            <div class="card-body">
+                <p class="text-center text-muted">Register a new user</p>
+
+                <form asp-action="Index" method="post" id="registrationForm">
+                    <div class="container mt-4">
+                        <div class="row">
+                            <!-- First Name -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="First Name" asp-for="FIRST_NAME" id="firstName" required>
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span asp-validation-for="FIRST_NAME" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Last Name" asp-for="LAST_NAME" id="lastName" required>
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <span asp-validation-for="LAST_NAME" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="date" class="form-control" placeholder="Date of Birth" asp-for="DOB" id="DOB" required>
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fa fa-birthday-cake"></i>
+                                    </span>
+                                    <span asp-validation-for="DOB" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Designation -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Designation" asp-for="DESIGNATION" id="designation" required>
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-briefcase"></i>
+                                    </span>
+                                    <span asp-validation-for="DESIGNATION" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!-- Company Selection -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    @Html.DropDownListFor(model => model.SelectedCompanyCode,
+                                             (SelectList)ViewBag.CompanyList,
+                                             "Select a company",
+                                             new { @class = "form-select", id = "SelectedCompanyCode", required = "required", onchange = "updateCompanyDescription()" })
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-building"></i>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="SelectedCompanyCode" class="text-danger"></span>
+                            </div>
+
+                            @Html.HiddenFor(model => model.SelectedCompany, new { id = "SelectedCompanyDescription" })
+
+                            <script>
+                               
+                                function updateCompanyDescription() {
+                                    var selectedCompany = document.getElementById("SelectedCompanyCode");
+                                    var selectedDescription = selectedCompany.options[selectedCompany.selectedIndex].text;
+
+                                  
+                                    document.getElementById("SelectedCompanyDescription").value = selectedDescription;
+                                }
+                            </script>
+
+                            <!-- Contact Number -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control"
+                                           placeholder="Contact"
+                                           asp-for="CONTACT_NO"
+                                           id="contactNo"
+                                           required
+                                           maxlength="10"
+                                           pattern="\d{10}"
+                                           title="Please enter exactly 10 digits"
+                                           oninput="validateContactNo(this)" /> 
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    <span asp-validation-for="CONTACT_NO" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="email"
+                                           class="form-control"
+                                           placeholder="Email"
+                                           asp-for="E_MAIL"
+                                           id="email"
+                                           required
+                                           oninput="validateEmail(this)" /> 
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <span asp-validation-for="E_MAIL" class="text-danger"></span>
+                                </div>
+                            </div>
+
+
+                            <!-- Address Input (House No / Street / City) -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="No" asp-for="HouseNo" required>
+                                    <span class="input-group-text">/</span>
+                                    <input type="text" class="form-control" placeholder="Street" asp-for="Street" required>
+                                    <span class="input-group-text">/</span>
+                                    <input type="text" class="form-control" placeholder="City" asp-for="City" required>
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="HouseNo" class="text-danger"></span>
+                                <span asp-validation-for="Street" class="text-danger"></span>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="input-group mb-3">
+                                <div class="form-control d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="male" name="Gender" value="Male" required>
+                                        <label class="form-check-label" for="male">Male</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="female" name="Gender" value="Female" required>
+                                        <label class="form-check-label" for="female">Female</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" class="form-check-input" id="other" name="Gender" value="Other" required>
+                                        <label class="form-check-label" for="other">Other</label>
+                                    </div>
+                                </div>
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-venus-mars"></i>
+                                </span>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3 position-relative">
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" placeholder="Password" asp-for="PASSWORD" required
+                                           data-bs-toggle="popover" data-bs-placement="right"
+                                           data-bs-content="Password must contain exactly 8 characters: at least one uppercase letter, one lowercase letter, one numeric digit, and one special character (!#$%^&*_+=?/~’;’,<>|)."
+                                           onfocus="showPasswordPolicy()" onblur="hidePasswordPolicy()" oninput="validatePassword()">
+                                    <span class="input-group-text bg-primary text-white">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <span asp-validation-for="PASSWORD" class="text-danger"></span>
+                                </div>
+                                <!-- Notification Message -->
+                                <div id="passwordValidationMessage" class="text-success mt-2"></div>
+                            </div>
+
+
+
+                            <!-- Confirm Password -->
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" asp-for="CON_PASSWORD" required
+                                       oninput="validateConfirmPassword()">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <span asp-validation-for="CON_PASSWORD" class="text-danger"></span>
+                            </div>
+                            <!-- Notification Message -->
+                            <div id="confirmPasswordValidationMessage" class="text-success mt-2"></div>
+
+                            <!-- Terms and Conditions -->
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="agreeTerms" name="terms" value="agree" required>
+                                        <label for="agreeTerms" class="form-check-label">
+                                            I agree to the <a href="#">terms</a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Register Button -->
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary w-100">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+                <p class="text-center mb-0">
+                    <a href="@Url.Action("Index", "Login")" class="text-muted">I already have a membership</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+       
+        function validateField(input) {
+            if (input.checkValidity()) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+            } else {
+                input.classList.remove('is-valid');
+                input.classList.add('is-invalid');
+            }
+        }
+
+       
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            let isValid = true;
+
+          
+            const inputs = document.querySelectorAll('#registrationForm input');
+            inputs.forEach(function (input) {
+                if (!input.checkValidity()) {
+                    isValid = false;
+                    validateField(input);
+                } else {
+                    validateField(input);
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault(); 
+            }
+        });
+
+        
+        const inputs = document.querySelectorAll('#registrationForm input');
+        inputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                validateField(input);
+            });
+        });
+    </script>
+    <script>
+       
+        document.addEventListener("DOMContentLoaded", function () {
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    trigger: 'manual', 
+                    container: 'body' 
+                });
+            });
+        });
+
+       
+        function showPasswordPolicy() {
+            var passwordInput = document.getElementById('password');
+            var popover = bootstrap.Popover.getInstance(passwordInput);
+            popover.show();
+        }
+
+        
+        function hidePasswordPolicy() {
+            var passwordInput = document.getElementById('password');
+            var popover = bootstrap.Popover.getInstance(passwordInput);
+            popover.hide();
+        }
+
+      
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const passwordMessage = document.getElementById('passwordValidationMessage');
+
+            const passwordPolicy = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!#$%^&*+=?/~’;’,<>|]).{8,}$/;
+
+            if (!password.match(passwordPolicy)) {
+                passwordMessage.textContent = "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.";
+                passwordMessage.style.color = "red";  
+                document.getElementById('password').style.borderColor = "red";
+            } else {
+                passwordMessage.textContent = "Strong";
+                passwordMessage.style.color = "green";  
+                document.getElementById('password').style.borderColor = "green";
+            }
+        }
+
+        
+        function validateConfirmPassword() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const confirmPasswordMessage = document.getElementById('confirmPasswordValidationMessage');
+
+            const passwordPolicy = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!#$%^&*+=?/~’;’,<>|]).{8,}$/;
+
+
+            if (confirmPassword !== password) {
+                confirmPasswordMessage.textContent = "Passwords do not match.";
+                confirmPasswordMessage.style.color = "red";  
+                document.getElementById('confirmPassword').style.borderColor = "red";
+            } else {
+                confirmPasswordMessage.textContent = "Matched";
+                confirmPasswordMessage.style.color = "green";  
+                document.getElementById('confirmPassword').style.borderColor = "green";
+            }
+        }
+
+
+       
+        function validateForm() {
+            let isValid = true;
+
+            const firstName = document.querySelector('[asp-for="FIRST_NAME"]').value;
+            const firstNameInput = document.querySelector('[asp-for="FIRST_NAME"]');
+            if (!firstName) {
+                document.querySelector('[asp-validation-for="FIRST_NAME"]').textContent = "First Name is required.";
+                firstNameInput.style.borderColor = "red";
+                isValid = false;
+            } else {
+                document.querySelector('[asp-validation-for="FIRST_NAME"]').textContent = "";
+                firstNameInput.style.borderColor = "green";
+            }
+
+            const lastName = document.querySelector('[asp-for="LAST_NAME"]').value;
+            const lastNameInput = document.querySelector('[asp-for="LAST_NAME"]');
+            if (!lastName) {
+                document.querySelector('[asp-validation-for="LAST_NAME"]').textContent = "Last Name is required.";
+                lastNameInput.style.borderColor = "red";
+                isValid = false;
+            } else {
+                document.querySelector('[asp-validation-for="LAST_NAME"]').textContent = "";
+                lastNameInput.style.borderColor = "green";
+            }
+
+           
+            validatePassword();
+            validateConfirmPassword();
+
+           
+            const gender = document.querySelector('input[name="Gender"]:checked');
+            if (!gender) {
+                alert("Gender selection is required.");
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+       
+        document.querySelector('form').addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                event.preventDefault(); 
+            }
+        });
+
+    </script>
+      <script>
+        function validateContactNo(input) {
+            
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+    </script>
+ 
+    <script>
+        function validateEmail(input) {
+            
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@@(gmail\.com|lk)$/; 
+
+
+
+
+         
+            if (!emailPattern.test(input.value)) {
+                input.setCustomValidity("Please enter a valid email format: youremail@gmail.com or youremail@lk");
+            } else {
+                input.setCustomValidity(""); 
+            }
+        }
+    </script>
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/adminlte.min.js"></script>
+</body>
+</html>

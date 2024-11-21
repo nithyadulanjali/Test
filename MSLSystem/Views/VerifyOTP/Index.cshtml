@@ -1,0 +1,74 @@
+﻿@model MSLSystem.Models.EmailService
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verify OTP</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/adminlte.min.css">
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100" style="background-color: #CCF2F4;">
+    <div class="login-box mx-auto" style="max-width: 400px; width: 100%;">
+        <div class="card border-0 shadow-lg p-4 rounded" style="background-color: #F4F9F9;">
+            <div class="card-header text-center bg-transparent mb-3">
+                <a href="#" class="h1"><b>MSL</b></a>
+            </div>
+            <div class="card-body">
+                <p class="text-center text-muted">
+                    Please enter your registered email and the OTP received to proceed with password reset.
+                    Didn't receive the OTP?
+                </p>
+
+                @* Form to verify the OTP *@
+                <form method="post" action="@Url.Action("VerifyOTP", "VerifyOTP")">
+                    <div class="input-group mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                        <span class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="enteredOtp" class="form-control" placeholder="Enter OTP" required>
+                        <span class="input-group-text">
+                            <i class="fas fa-shield-alt"></i>
+                        </span>
+                    </div>
+
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.ErrorMessage
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                        </div>
+                    </div>
+                </form>
+
+                <p class="text-center mb-0">
+                    <a href="@Url.Action("Index", "RecoverPW")" class="text-muted">Recover Password</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/js/adminlte.min.js"></script>
+</body>
+</html>
